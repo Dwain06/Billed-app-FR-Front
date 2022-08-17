@@ -15,9 +15,17 @@ export default class NewBill {
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
+
+  isFileImage = file => {
+    const acceptedImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
+    return file && acceptedImageTypes.includes(file['type'])
+}
+
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+
+    if (this.isFileImage(file)){
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
@@ -39,38 +47,57 @@ export default class NewBill {
         this.fileUrl = fileUrl
         this.fileName = fileName
       }).catch(error => console.error(error))
+    } else {
+      alert("Veuillez sélectionner un fichier image")
+
+      //Clear file input
+      const oldInput = document.querySelector(`input[data-testid="file"]`); 
+      const newInput = document.createElement("input"); 
+  
+      newInput.setAttribute("required", ""); 
+      newInput.type = "file"; 
+      newInput.setAttribute("accept", ".jpg,.jpeg,.png"); 
+      newInput.className = oldInput.className; 
+      newInput.setAttribute("data-testid", "file"); 
+  
+      oldInput.parentNode.replaceChild(newInput, oldInput);
+    }
   }
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
-    const email = JSON.parse(localStorage.getItem("user")).email
-    const bill = {
-      email,
-      type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
-      name:  e.target.querySelector(`input[data-testid="expense-name"]`).value,
-      amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
-      date:  e.target.querySelector(`input[data-testid="datepicker"]`).value,
-      vat: e.target.querySelector(`input[data-testid="vat"]`).value,
-      pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
-      commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value,
-      fileUrl: this.fileUrl,
-      fileName: this.fileName,
-      status: 'pending'
-    }
-    this.updateBill(bill)
-    this.onNavigate(ROUTES_PATH['Bills'])
-  }
 
-  // not need to cover this function by tests
-  updateBill = (bill) => {
-    if (this.store) {
-      this.store
-      .bills()
-      .update({data: JSON.stringify(bill), selector: this.billId})
-      .then(() => {
-        this.onNavigate(ROUTES_PATH['Bills'])
-      })
-      .catch(error => console.error(error))
-    }
+      console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+      const email = JSON.parse(localStorage.getItem("user")).email
+        const bill = {
+          email,
+          type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
+          name:  e.target.querySelector(`input[data-testid="expense-name"]`).value,
+          amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
+          date:  e.target.querySelector(`input[data-testid="datepicker"]`).value,
+          vat: e.target.querySelector(`input[data-testid="vat"]`).value,
+          pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
+          commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value,
+          fileUrl: this.fileUrl,
+          fileName: this.fileName,
+          status: 'pending'
+        }
+      this.updateBill(bill)
+      this.onNavigate(ROUTES_PATH['Bills'])
   }
+  
+
+      // not need to cover this function by tests
+      updateBill = (bill) => {
+        if (this.store) {
+          this.store
+          .bills()
+          .update({data: JSON.stringify(bill), selector: this.billId})
+          .then(() => {
+            this.onNavigate(ROUTES_PATH['Bills'])
+          })
+          .catch(error => console.error(error))
+        }
+      }
+
+
 }
