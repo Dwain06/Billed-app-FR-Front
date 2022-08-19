@@ -1,6 +1,8 @@
 import { ROUTES_PATH } from '../constants/routes.js'
 import { formatDate, formatStatus } from "../app/format.js"
 import Logout from "./Logout.js"
+import big_billed from '../assets/svg/big_billed.js'
+import BillsUI from '../views/BillsUI.js'
 
 export default class {
   constructor({ document, onNavigate, store, localStorage }) {
@@ -35,34 +37,42 @@ export default class {
       .bills()
       .list()
       .then(snapshot => {
-        let bills = snapshot
-          // .sort(function(a,b){
-          //   return new Date(b.date) - new Date(a.date);
-          // });
+        // console.log(snapshot.sort((a, b) => {
+        //   ((a.date < b.date) ? 1 : -1)
+        //   console.log(a.date)
+        // } ));
+        // const bills = snapshot.forEach(bill => bill.date = new Date(bill.date))
 
-          // .sort((a, b) => ((a.date < b.date) ? 1 : -1))
-          console.log('bills', bills)
-          // bills = snapshot.map(doc => {
-          //   try {
-          //     return {
-          //       ...doc,
-          //       date: formatDate(doc.date),
-          //       status: formatStatus(doc.status)
-          //     }
-          //   } catch(e) {
-          //     // if for some reason, corrupted data was introduced, we manage here failing formatDate function
-          //     // log the error and return unformatted date in that case
-          //     console.log(e,'for',doc)
-          //     return {
-          //       ...doc,
-          //       date: doc.date,
-          //       status: formatStatus(doc.status)
-          //     }
-          //   }
-          // })
 
+        // console.log(snapshot);
+        // const bills = snapshot.sort((a, b) => ((a.date).split("-").join('') < (b.date).split("-").join('')) ? 1 : -1)
+        // console.log(bills);
+
+        
+        
+          const bills = snapshot.map(doc => {
+
+            try {
+              return {
+                ...doc,
+                date: doc.date,
+                dateFormated: formatDate(doc.date),
+                status: formatStatus(doc.status)
+              }
+            } catch(e) {
+              // if for some reason, corrupted data was introduced, we manage here failing formatDate function
+              // log the error and return unformatted date in that case
+              console.log(e,'for',doc)
+              return {
+                ...doc,
+                date: doc.date,
+                status: formatStatus(doc.status)
+              }
+            }
+          })
           // console.log('length', bills.length)
-          // console.log('bills', bills[0].date)
+        // .sort((a, b) => ((a.date < b.date) ? 1 : -1))
+
         return bills
       })
     }

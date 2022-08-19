@@ -10,7 +10,7 @@ const row = (bill) => {
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
-      <td>${bill.date}</td>
+      <td>${bill.dateFormated? bill.dateFormated : bill.date}</td>
       <td>${bill.amount} €</td>
       <td>${bill.status}</td>
       <td>
@@ -18,9 +18,13 @@ const row = (bill) => {
       </td>
     </tr>
     `)
-  }
+}
 
+// const rows = (data) => {
+//   return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+// }
 const rows = (data) => {
+  console.log(data)
   return (data && data.length) ? data.sort((a, b) => ((a.date < b.date) ? 1 : -1)).map(bill => row(bill)).join("") : ""
 }
 
@@ -48,7 +52,12 @@ export default ({ data: bills, loading, error }) => {
   } else if (error) {
     return ErrorPage(error)
   }
-  
+  // const billsX = ( bills )
+  // console.log(billsX);
+  //     billsX.forEach(element => {
+  //       element.dateFormated = element.date
+  //         })
+  console.log(bills)
   return (`
     <div class='layout'>
       ${VerticalLayout(120)}
