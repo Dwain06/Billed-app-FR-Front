@@ -1,8 +1,6 @@
 import { ROUTES_PATH } from '../constants/routes.js'
 import { formatDate, formatStatus } from "../app/format.js"
 import Logout from "./Logout.js"
-import big_billed from '../assets/svg/big_billed.js'
-import BillsUI from '../views/BillsUI.js'
 
 export default class {
   constructor({ document, onNavigate, store, localStorage }) {
