@@ -24,8 +24,10 @@ export default class NewBill {
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const errorFile = this.document.querySelector(".error-file")
 
     if (this.isFileImage(file)){
+      errorFile.innerHTML = ""
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
@@ -48,19 +50,8 @@ export default class NewBill {
         this.fileName = fileName
       }).catch(error => console.error(error))
     } else {
-      alert("Veuillez sélectionner un fichier image")
-
-      //Clear file input
-      const oldInput = document.querySelector(`input[data-testid="file"]`); 
-      const newInput = document.createElement("input"); 
-  
-      newInput.setAttribute("required", ""); 
-      newInput.type = "file"; 
-      newInput.setAttribute("accept", ".jpg,.jpeg,.png"); 
-      newInput.className = oldInput.className; 
-      newInput.setAttribute("data-testid", "file"); 
-  
-      oldInput.parentNode.replaceChild(newInput, oldInput);
+      errorFile.innerHTML = "Veuillez sélectionner un fichier image (.jpeg, .jpg ou .png)"     
+      e.target.value = "" //Clear file input
     }
   }
   handleSubmit = e => {
